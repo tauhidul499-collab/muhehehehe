@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kawaii Surprise For You 💕</title>
+    <style>
+        body {
+            background-color: #fff5f7;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Comic Sans MS', 'Chalkboard SE', cursive, sans-serif;
+            overflow: hidden;
+            position: relative;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .my-name {
+            color: #ff6b8b;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 0px #ffeef2;
+            z-index: 10;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        .scratch-container {
+            position: relative;
+            width: 320px;
+            height: 180px;
+            background-color: #ffeef2;
+            border: 4px solid #ffb6c1;
+            border-radius: 20px;
+            box-shadow: 6px 6px 0px #ffb6c1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            overflow: hidden;
+        }
+
+        .secret-message {
+            color: #ff6b8b;
+            font-size: 22px;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+            line-height: 1.4;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            cursor: pointer;
+            z-index: 2;
+            border-radius: 14px;
+        }
+
+        .falling-heart {
+            position: absolute;
+            top: -20px;
+            pointer-events: none;
+            animation: fall linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(0px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(105vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- This is your name -->
+    <div class="my-name">From: Bornil ✨</div>
+
+    <div class="scratch-container">
+        <div class="secret-message">
+            Hey, you are cute... 💕
+        </div>
+        <canvas id="scratch-canvas" width="320" height="180"></canvas>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('scratch-canvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+
+        ctx.fillStyle = '#ffb6c1';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 18px "Comic Sans MS", cursive';
+        ctx.textAlign = 'center';
+        ctx.fillText('Scratch Me! 🎀', canvas.width / 2, canvas.height / 2 + 5);
+
+        function scratch(e) {
+            if (!isDrawing) return;
+            
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.clientX || e.touches.clientX) - rect.left;
+            const y = (e.clientY || e.touches.clientY) - rect.top;
+
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.beginPath();
+            ctx.arc(x, y, 20, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        canvas.addEventListener('mousedown', () => isDrawing = true);
+        canvas.addEventListener('mouseup', () => isDrawing = false);
+        canvas.addEventListener('mousemove', scratch);
+
+        canvas.addEventListener('touchstart', (e) => { isDrawing = true; scratch(e); });
+        canvas.addEventListener('touchend', () => isDrawing = false);
+        canvas.addEventListener('touchmove', (e) => { e.preventDefault(); scratch(e); });
+
+        function createFallingHeart() {
+            const hearts = ['💖', '💝', '⭐', '✨', '🌸'];
+            const el = document.createElement('div');
+            el.classList.add('falling-heart');
+            el.innerText = hearts[Math.floor(Math.random() * hearts.length)];
+            
+            el.style.left = Math.random() * 100 + 'vw';
+            el.style.animationDuration = Math.random() * 3 + 2 + 's';
+            el.style.fontSize = Math.random() * 15 + 15 + 'px';
+            
+            document.body.appendChild(el);
+            setTimeout(() => { el.remove(); }, 5000);
+        }
+        setInterval(createFallingHeart, 300);
+    </script>
+
+</body>
+</html>
